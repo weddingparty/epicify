@@ -65,7 +65,9 @@ module Epicify
 
       def _add_a_story_to_the_section id, line, completed, tags
         story = Story.new(id, line, completed, tags)
-        @sections.last.add_story(story)
+        if @sections.size > 0
+          @sections.last.add_story(story)
+        end
       end
 
       def _report_total_days
