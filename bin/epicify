@@ -63,7 +63,7 @@ class Main
 
     def _get_active_project_ids
       _asana_adapter.get_projects().select{|x|
-        x["name"] =~ Epicify::Project::ACTIVE_NAME_REGEX
+        x["name"] =~ Epicify::Entity::Project::ACTIVE_NAME_REGEX
       }.map{|x| x["id"]}
     end
 
@@ -82,7 +82,7 @@ class Main
         tasks_cache.set data
       end
 
-      project = Epicify::Project.create_project_from_data(data)
+      project = Epicify::Entity::Project.create_project_from_data(data)
       updater = Epicify::AsanaProjectUpdater.new(project, _asana_adapter)
       updater.update()
 
