@@ -19,5 +19,9 @@ tmp
 _yardoc
 doc/
 
+# coveralls
+coverage
+.coveralls.yml
+
 # cache
 .asana_project_tasks_cache/*

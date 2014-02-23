@@ -1,4 +1,5 @@
 [![Code Climate](https://codeclimate.com/github/weddingparty/epicify.png)](https://codeclimate.com/github/weddingparty/epicify)
+[![Coverage Status](https://coveralls.io/repos/weddingparty/epicify/badge.png?branch=master)](https://coveralls.io/r/weddingparty/epicify?branch=master)
 
 # Epicify
 
