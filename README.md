@@ -1,3 +1,5 @@
+[![Code Climate](https://codeclimate.com/github/weddingparty/epicify.png)](https://codeclimate.com/github/weddingparty/epicify)
+
 # Epicify
 
 A ruby script that parses your Asana project and gives useful reporting information.
