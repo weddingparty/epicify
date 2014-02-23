@@ -49,26 +49,9 @@ module Epicify
 
         log "_make_request #{type} - #{url}"
 
-        full_path = "https://app.asana.com/api/1.0" + url
-        uri = URI.parse(full_path)
-        http = Net::HTTP.new(uri.host, uri.port)
-        http.use_ssl = true
-        http.verify_mode = OpenSSL::SSL::VERIFY_PEER
-
-        header = {
-          "Content-Type" => "application/json"
-        }
-
-        req = nil
-        if type == :get
-          maybe_query = uri.query ? "?" + uri.query : ""
-          req = Net::HTTP::Get.new(uri.path + maybe_query, header)
-        elsif type == :post
-          req = Net::HTTP::Post.new(uri.path, header)
-        elsif type == :put
-          req = Net::HTTP::Put.new(uri.path, header)
-        end
-        req.basic_auth(@api_key, '')
+        uri = _uri_for_url(url)
+        http = _http_for_uri(uri)
+        req = _request_for(type, uri)
 
         if body
           req.body = body
@@ -84,6 +67,40 @@ module Epicify
           return body['data']
         end
 
+      end
+
+      def _uri_for_url(url)
+        full_path = "https://app.asana.com/api/1.0" + url
+        URI.parse(full_path)
+      end
+
+      def _http_for_uri(uri)
+        http = Net::HTTP.new(uri.host, uri.port)
+        http.use_ssl = true
+        http.verify_mode = OpenSSL::SSL::VERIFY_PEER
+        http
+      end
+
+      def _request_for(type, uri)
+
+        req = nil
+
+        header = {
+          "Content-Type" => "application/json"
+        }
+
+        if type == :get
+          maybe_query = uri.query ? "?" + uri.query : ""
+          req = Net::HTTP::Get.new(uri.path + maybe_query, header)
+        elsif type == :post
+          req = Net::HTTP::Post.new(uri.path, header)
+        elsif type == :put
+          req = Net::HTTP::Put.new(uri.path, header)
+        end
+
+        req.basic_auth(@api_key, '')
+
+        req
       end
 
   end
