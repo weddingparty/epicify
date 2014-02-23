@@ -4,7 +4,7 @@ module Epicify
 
     ACTIVE_NAME_REGEX = %r{^\* }
 
-    def self.project_from_data data
+    def self.create_project_from_data data
       project = Project.new()
       data.each do |task|
         project.add_task(task["id"], task["name"], task["completed"], task["tags"])

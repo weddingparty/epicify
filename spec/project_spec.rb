@@ -44,7 +44,7 @@ describe "Project" do
       "
 
       project_tasks = FixturesParser.new.tasks_for_project_from_fixture(fixture)
-      @project = Epicify::Project.project_from_data(project_tasks)
+      @project = Epicify::Project.create_project_from_data(project_tasks)
       @stories = @project.stories
     end
 
@@ -92,7 +92,7 @@ describe "Project" do
       "
 
       project_tasks = FixturesParser.new.tasks_for_project_from_fixture(fixture)
-      @project = Epicify::Project.project_from_data(project_tasks)
+      @project = Epicify::Project.create_project_from_data(project_tasks)
       @stories = @project.stories
     end
 

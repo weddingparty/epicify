@@ -82,7 +82,7 @@ class Main
         tasks_cache.set data
       end
 
-      project = Epicify::Project.project_from_data(data)
+      project = Epicify::Project.create_project_from_data(data)
       updater = Epicify::AsanaProjectUpdater.new(project, _asana_adapter)
       updater.update()
 
