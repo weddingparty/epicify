@@ -1,0 +1,93 @@
+#!/usr/bin/env ruby
+
+require 'json'
+require 'net/https'
+
+require 'yaml'
+require 'fileutils'
+
+require 'optparse'
+require 'ostruct'
+
+begin
+  require 'epicify'
+rescue LoadError
+  require 'rubygems'
+  require 'epicify'
+end
+
+$options = OpenStruct.new
+$options.verbose = false
+
+optparse = OptionParser.new do |opts|
+  opts.on('-h', '--help', 'Display this screen') do
+    puts opts
+    exit
+  end
+  opts.on('-v', 'be verbose') do
+    $options.verbose = true
+  end
+  opts.on("-p N", Integer, "run against a specific project id") do |n|
+    $options.project_id = n
+  end
+end
+
+optparse.parse!
+
+def log message
+  if $options.verbose
+    puts message
+  end
+end
+
+class Main
+
+  def run
+
+    if !$options.project_id.nil?
+      _process_project $options.project_id
+      return
+    end
+
+    _get_active_project_ids().each do |active_project_id|
+      _process_project active_project_id
+    end
+
+  end
+
+  private
+
+    def _asana_adapter
+      @asana_adapter ||= Epicify::AsanaAdapter.new(ENV["EPICIFY_ASANA_API_KEY"])
+    end
+
+    def _get_active_project_ids
+      _asana_adapter.get_projects().select{|x|
+        x["name"] =~ Epicify::Project::ACTIVE_NAME_REGEX
+      }.map{|x| x["id"]}
+    end
+
+    def _process_project project_id
+      log "processing #{project_id}"
+
+      return if ! data = _asana_adapter.get_tasks_for_project(project_id)
+
+      tasks_cache = Epicify::ProjectTasksCache.new(project_id)
+
+      if tasks_cache.get().to_json == data.to_json
+        log "tasks cache matches.  no need to process project"
+        return
+      else
+        log "tasks cache does not match data.  Updating cache and proceeding with processing"
+        tasks_cache.set data
+      end
+
+      project = Epicify::Project.project_from_data(data)
+      updater = Epicify::AsanaProjectUpdater.new(project, _asana_adapter)
+      updater.update()
+
+    end
+
+end
+
+Main.new.run()
