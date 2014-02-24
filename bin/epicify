@@ -1,20 +1,14 @@
 #!/usr/bin/env ruby
 
-require 'json'
-require 'net/https'
-
-require 'yaml'
-require 'fileutils'
-
-require 'optparse'
-require 'ostruct'
-
 begin
   require 'epicify'
 rescue LoadError
   require 'rubygems'
   require 'epicify'
 end
+
+require 'optparse'
+require 'ostruct'
 
 $options = OpenStruct.new
 $options.verbose = false

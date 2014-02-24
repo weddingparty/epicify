@@ -1,3 +1,9 @@
+require 'net/https'
+
+require 'json'
+require 'yaml'
+require 'fileutils'
+
 require_relative "epicify/asana_adapter"
 require_relative "epicify/asana_project_updater"
 require_relative "epicify/project_tasks_cache"
