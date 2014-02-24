@@ -64,19 +64,19 @@ class Main
     def _process_project project_id
       log "processing #{project_id}"
 
-      return if ! data = _asana_adapter.get_tasks_for_project(project_id)
+      return if ! project_data = _asana_adapter.get_tasks_for_project(project_id)
 
-      tasks_cache = Epicify::ProjectTasksCache.new(project_id)
+      tasks_cache = Epicify::ProjectTasksCache.new(".asana_project_tasks_cache", project_id)
 
-      if tasks_cache.get().to_json == data.to_json
-        log "tasks cache matches.  no need to process project"
+      if tasks_cache.previously_cached_data_matches?(project_data)
+        log "Previously cached tasks data matches.  No need to process project."
         return
       else
-        log "tasks cache does not match data.  Updating cache and proceeding with processing"
-        tasks_cache.set data
+        log "New data does not match previously cached data.  Updating cache and proceeding with processing"
+        tasks_cache.set(project_data)
       end
 
-      project = Epicify::Entity::Project.create_project_from_data(data)
+      project = Epicify::Entity::Project.create_project_from_data(project_data)
       updater = Epicify::AsanaProjectUpdater.new(project, _asana_adapter)
       updater.update()
 
