@@ -34,6 +34,18 @@ def log message
   end
 end
 
+class PutsLogger
+
+  def log message
+
+    if $options.verbose
+      puts message
+    end
+
+  end
+
+end
+
 class Main
 
   def run
@@ -52,7 +64,7 @@ class Main
   private
 
     def _asana_adapter
-      @asana_adapter ||= Epicify::AsanaAdapter.new(ENV["EPICIFY_ASANA_API_KEY"])
+      @asana_adapter ||= Epicify::AsanaAdapter.new(ENV["EPICIFY_ASANA_API_KEY"], PutsLogger.new)
     end
 
     def _get_active_project_ids

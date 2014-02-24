@@ -2,8 +2,15 @@ module Epicify
 
   class AsanaAdapter
 
-    def initialize(api_key)
+    def initialize(api_key, logger = nil)
       @api_key = api_key
+      @logger = logger
+    end
+
+    def log(message)
+      if @logger
+        @logger.log(message)
+      end
     end
 
     def get_projects
@@ -15,35 +22,28 @@ module Epicify
     end
 
     def update_task_name task_id, name
-      body = {
-        "data" => {
-          "id" => task_id,
-          "name" => name,
-        }
-      }.to_json()
-      _make_request :put, "/tasks/#{task_id}", body
+      _make_request :put, "/tasks/#{task_id}", _json_bodyify({"id" => task_id, "name" => name })
     end
 
     def associate_tag_with_task tag_id, task_id
-      body = {
-        "data" => {
-          "tag" => tag_id
-        }
-      }.to_json()
-      _make_request :post, "/tasks/#{task_id}/addTag", body
+      _tag_action "addTag", tag_id, task_id
     end
 
     def remove_tag_from_task tag_id, task_id
-      body = {
-          "data" => {
-            "tag" => tag_id
-          }
-        }.to_json()
-        log "#{body}"
-      _make_request :post, "/tasks/#{task_id}/removeTag", body
+      _tag_action "removeTag", tag_id, task_id
     end
 
     private
+
+      def _tag_action action, tag_id, task_id
+        _make_request :post, "/tasks/#{task_id}/#{action}", _json_bodyify({"tag" => tag_id})
+      end
+
+      def _json_bodyify data
+        {
+          "data" => data
+        }.to_json()
+      end
 
       def _make_request type, url, body = nil
 
@@ -57,7 +57,7 @@ module Epicify
           req.body = body
         end
 
-        res = http.start { |http| http.request(req) }
+        res = _send_request_to_actual_service(http, req)
 
         body = JSON.parse(res.body)
         if body['errors'] then
@@ -67,6 +67,10 @@ module Epicify
           return body['data']
         end
 
+      end
+
+      def _send_request_to_actual_service http, req
+        http.start { |http| http.request(req) }
       end
 
       def _uri_for_url(url)
