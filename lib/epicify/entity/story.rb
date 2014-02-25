@@ -79,7 +79,7 @@ module Epicify
       end
 
       def _remove_any_preexisting_points_tags_from_task
-        @removed_tags = tags.select{|tag| tag.points > 0 if !tag.points.nil?}
+        @removed_tags = tags.select{|tag| tag.points > 0}
       end
 
     end

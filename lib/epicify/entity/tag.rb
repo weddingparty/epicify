@@ -10,7 +10,7 @@ module Epicify
       end
 
       def points
-        _point_value_for_tag_id self.id
+        _point_value_for_tag_id self.id || 0
       end
 
       private
