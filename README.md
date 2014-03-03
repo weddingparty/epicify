@@ -4,7 +4,7 @@
 
 # Epicify
 
-A ruby script that parses your Asana project and gives useful reporting information.
+A ruby script that parses your Asana projects and updates them with useful reporting information.
 
 Run ```epicify -h``` to see all options.
 
