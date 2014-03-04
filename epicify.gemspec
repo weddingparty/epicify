@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Gordon McCreight", "Kaushik Gopal", "Guilherme Moura"]
   s.email       = ["gordon@weddingparty"]
-  s.homepage    = ""
+  s.homepage    = "https://github.com/weddingparty/epicify"
   s.summary     = %q{Add epic reporting to Asana projects}
   s.description = %q{Add epic reporting to Asana projects}
   s.license    = "MIT"
